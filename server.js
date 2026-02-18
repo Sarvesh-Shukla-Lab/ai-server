@@ -1,21 +1,24 @@
 const express = require("express");
 const app = express();
 
-app.use(express.json());
+// VERY IMPORTANT (Render fix)
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true }));
 
-app.post("/chat", async (req, res) => {
-    const userMessage = req.body.message;
+app.get("/", (req, res) => {
+    res.send("AI Server Running");
+});
+
+app.post("/chat", (req, res) => {
+
+    console.log("BODY:", req.body); // debug
+
+    const userMessage = req.body?.message || "kuch nahi mila";
 
     res.json({
         reply: "Tumne bola: " + userMessage
     });
 });
 
-app.get("/", (req, res) => {
-    res.send("AI server is running 🚀");
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log("Server started on port " + PORT);
-});
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log("Server started on " + PORT));
